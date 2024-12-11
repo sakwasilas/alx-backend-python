@@ -66,7 +66,6 @@ class TestGetJson(unittest.TestCase):
         # Assert that the result returned from get_json is the same as the mock_payload
         self.assertEqual(result, test_payload)
 
-
 class TestMemoize(unittest.TestCase):
     @patch.object
     def test_memoize(self, mock_method):
@@ -75,7 +74,6 @@ class TestMemoize(unittest.TestCase):
         """
         # Define the class with the method and property
         class TestClass:
-            """ define a class with the method and property for test class"""
             def a_method(self):
                 return 42  # This should be the mocked method
 
