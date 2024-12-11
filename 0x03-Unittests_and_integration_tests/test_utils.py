@@ -75,6 +75,7 @@ class TestMemoize(unittest.TestCase):
         """
         # Define the class with the method and property
         class TestClass:
+            """ define a class with the method and property for test class"""
             def a_method(self):
                 return 42  # This should be the mocked method
 
