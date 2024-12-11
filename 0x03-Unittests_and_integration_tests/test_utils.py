@@ -67,7 +67,7 @@ class TestGetJson(unittest.TestCase):
             self.assertEqual(result, test_payload)
 '''
 class TestMemoize(unittest.TestCase):
-    @patch.object
+    @patch("path_to_your_module.TestClass.a_method")  # Correct path to the method being patched
     def test_memoize(self, mock_method):
         """
         Test that the memoize decorator caches the result and calls the method only once.
@@ -97,6 +97,7 @@ class TestMemoize(unittest.TestCase):
         # Assert that the result of both calls is the same (memoized result)
         self.assertEqual(result_first_call, result_second_call)
         self.assertEqual(result_first_call, 42)  # Ensure the result is 42
+
 
 if __name__ == "__main__":
     unittest.main()
