@@ -67,18 +67,51 @@ class TestGetJson(unittest.TestCase):
             self.assertEqual(result, test_payload)
 '''
 class TestMemoize(unittest.TestCase):
+    """
+    Unit test class to test the memoization functionality of the 'memoize' decorator.
+    """
+
     @patch("path_to_your_module.TestClass.a_method")  # Correct path to the method being patched
     def test_memoize(self, mock_method):
         """
         Test that the memoize decorator caches the result and calls the method only once.
+
+        This method creates a class with a memoized property, then calls the property twice to
+        ensure the method is only called once. The test ensures that the value returned by the
+        property is cached correctly and the method is not repeatedly called.
+        
+        Args:
+            mock_method (Mock): The mocked version of the 'a_method' in TestClass.
+        
+        Asserts:
+            - The 'a_method' is called only once.
+            - The result of the memoized property is consistent across calls.
+            - The result of the property matches the expected value (42 in this case).
         """
         # Define the class with the method and property
         class TestClass:
             def a_method(self):
+                """
+                A simple method that returns a fixed value of 42.
+                
+                This method is patched in the test to avoid actual execution.
+                
+                Returns:
+                    int: The value 42.
+                """
                 return 42  # This should be the mocked method
 
             @memoize  # Apply memoize decorator
             def a_property(self):
+                """
+                A property that is memoized using the 'memoize' decorator.
+                
+                The first call to this property will compute the result, and subsequent calls 
+                will return the cached value without calling the underlying method.
+                
+                Returns:
+                    int: The result of calling a_method (which is 42).
+                """
                 return self.a_method()
 
         # Create an instance of the TestClass
@@ -96,8 +129,7 @@ class TestMemoize(unittest.TestCase):
 
         # Assert that the result of both calls is the same (memoized result)
         self.assertEqual(result_first_call, result_second_call)
-        self.assertEqual(result_first_call, 42)  # Ensure the result is 42
-
+        self.assertEqual(result_first_call, 42)  
 
 if __name__ == "__main__":
     unittest.main()
