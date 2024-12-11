@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+
 """
 Parameterize a unit test
 """
+
 import unittest
 from parameterized import parameterized
 from unittest.mock import patch, Mock
@@ -32,10 +34,12 @@ class TestAccessNestedMap(unittest.TestCase):
             access_nested_map(nested_map, path)
 
 class TestGetJson(unittest.TestCase):
+
     """
      implement the TestGetJson.test_get_json
      method to test that utils.get_json returns the expected result.
     """
+
     @parameterized.expand([
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False})
@@ -60,6 +64,7 @@ class TestGetJson(unittest.TestCase):
             self.assertEqual(get_json(url), payload)
 
 class TestMemoize(unittest.TestCase):
+
     ''' memoize unittest '''
 
     def test_memoize(self):
@@ -74,7 +79,6 @@ class TestMemoize(unittest.TestCase):
             @memoize
             def a_property(self):
                 return self.a_method()
-
         with patch.object(TestClass, 'a_method') as mocked:
             spec = TestClass()
             spec.a_property
