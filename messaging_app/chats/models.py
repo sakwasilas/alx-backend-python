@@ -17,29 +17,43 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+        # Enum field for role
+    ROLE_CHOICES = [
+        ('guest', 'Guest'),
+        ('host', 'Host'),
+        ('admin', 'Admin'),
+    ]
+
 
 # Conversation Model
 class Conversation(models.Model):
-    # Adding custom conversation_id (UUID) field for unique conversation identifiers
-    conversation_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-
-    participants = models.ManyToManyField(User, related_name='conversations')
+    # Fields
+    conversation_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    participants_id = models.UUIDField()  # No many-to-many, just a UUID to indicate participants
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['conversation_id']),  # Index on conversation_id for quick lookups
+        ]
+    
     def __str__(self):
-        return f"Conversation {self.conversation_id} ({', '.join([user.username for user in self.participants.all()])})"
-
+        return f"Conversation {self.conversation_id} created at {self.created_at}"
 
 # Message Model
 class Message(models.Model):
-    # Adding custom fields for message_id, message_body, and sent_at
-    message_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)  # Unique message identifier
-    message_body = models.TextField()  # The body of the message (content)
-    sent_at = models.DateTimeField(auto_now_add=True)  # Timestamp for when the message was sent
-    
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    # Fields
+    message_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    sender_id = models.UUIDField()  # No foreign key, just a UUID to indicate the sender
+    message_body = models.TextField()
+    sent_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['sender_id']),  # Index on sender_id for quicker lookups
+        ]
+    
     def __str__(self):
-        return f"Message {self.message_id} from {self.sender.username} in Conversation {self.conversation.conversation_id}"
+        return f"Message from {self.sender_id} at {self.sent_at}"
+
+
