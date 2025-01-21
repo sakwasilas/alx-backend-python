@@ -1,13 +1,10 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import viewsets
+from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend  # Import DjangoFilterBackend
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
-from django.contrib import admin
-from django.urls import path, include
 
 class ConversationViewSet(viewsets.ModelViewSet):
     """
@@ -15,6 +12,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
     """
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)  # Enable filtering and ordering
+    filterset_fields = ['participants']  # Example: filter conversations by participants
+    ordering_fields = ['created_at']  # Allow ordering by 'created_at' field
 
     def create(self, request, *args, **kwargs):
         """
@@ -39,6 +39,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)  # Enable filtering and ordering
+    filterset_fields = ['conversation', 'sender_id']  # Example: filter messages by conversation or sender
+    ordering_fields = ['sent_at']  # Allow ordering by 'sent_at' field
 
     def create(self, request, *args, **kwargs):
         """
@@ -69,9 +72,3 @@ class MessageViewSet(viewsets.ModelViewSet):
         # Return the serialized message data
         serializer = self.get_serializer(message)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
- 
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('messaging/', include('chats.urls')),  # Include the chats app URLs
-]
