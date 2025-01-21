@@ -5,12 +5,14 @@ from django.db import models
 
 # Custom User Model
 class User(AbstractUser):
-    user_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
-
+    # Custom primary key (optional)
+    user_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    
+    # Defining fields from AbstractUser explicitly
+    email = models.EmailField(unique=True)  # Email is already in AbstractUser but explicitly defined
+    first_name = models.CharField(max_length=30)  # Explicitly adding first_name
+    last_name = models.CharField(max_length=30)  # Explicitly adding last_name
+    password = models.CharField(max_length=128)  # Explicitly adding password, though AbstractUser already handles this
     def __str__(self):
         return self.username
 
