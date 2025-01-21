@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Django admin path
-    path('', include('chats.urls')),  # Include the URLs for the chats app
+    path('admin/', admin.site.urls),  # Admin route
+    path('api/', include('chats.urls')),  # Include the API routes for chats
+    path('api-auth/', include('rest_framework.urls')),  # Include the built-in API auth routes
 ]
