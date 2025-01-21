@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Keep the admin path
-    path('api/', include('chats.urls')),  # Add this line to include the API routes under /api/
+    path('admin/', admin.site.urls),  # Django admin path
+    path('', include('chats.urls')),  # Include the URLs for the chats app
 ]
