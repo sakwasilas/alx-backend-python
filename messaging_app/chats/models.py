@@ -12,6 +12,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)  # Email is already in AbstractUser but explicitly defined
     first_name = models.CharField(max_length=30)  # Explicitly adding first_name
     last_name = models.CharField(max_length=30)  # Explicitly adding last_name
+    phone_number=models.CharField(max_length=12)
     password = models.CharField(max_length=128)  # Explicitly adding password, though AbstractUser already handles this
     def __str__(self):
         return self.username
