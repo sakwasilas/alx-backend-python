@@ -95,3 +95,18 @@ class RequestLoggingMiddleware:
         if x_forwarded_for:
             return x_forwarded_for.split(',')[0]
         return request.META.get('REMOTE_ADDR')
+    
+    class RolePermissionMiddleware:
+        def __init__(self, get_response):
+            self.get_response = get_response
+
+    def __call__(self, request):
+        # Check the user's role only for specific actions
+        if '/restricted-action/' in request.path:  # Replace with your restricted path
+            user = request.user  # Assuming user is attached to the request
+            if not user.is_authenticated or user.role not in ['admin', 'moderator']:
+                return JsonResponse(
+                    {'error': 'Access denied. Insufficient permissions.'},
+                    status=403
+                )
+        return self.get_response(request)
