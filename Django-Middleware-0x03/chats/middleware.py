@@ -36,12 +36,12 @@ class RequestLoggingMiddleware:
             log_file.write(log_message + '\n')
 
     class RestrictAccessByTimeMiddleware:
-    def __init__(self, get_response):
-        """
-        Initialize the middleware. The `get_response` is the next middleware
-        that will be called after this one.
-        """
-        self.get_response = get_response
+        def __init__(self, get_response):
+            """
+            Initialize the middleware. The `get_response` is the next middleware
+            that will be called after this one.
+            """
+            self.get_response = get_response
 
     def __call__(self, request):
         """
@@ -57,3 +57,41 @@ class RequestLoggingMiddleware:
         # Call the next middleware or view
         response = self.get_response(request)
         return response
+    class OffensiveLanguageMiddleware:
+        def __init__(self, get_response):
+            self.get_response = get_response
+            self.requests_log = {}  # To track messages per IP
+
+    def __call__(self, request):
+        # Only count POST requests (assumed to be sending chat messages)
+        if request.method == 'POST':
+            client_ip = self.get_client_ip(request)
+            now = datetime.now()
+
+            # Initialize or clean up old entries
+            if client_ip not in self.requests_log:
+                self.requests_log[client_ip] = []
+            self.requests_log[client_ip] = [
+                timestamp for timestamp in self.requests_log[client_ip]
+                if timestamp > now - timedelta(minutes=1)
+            ]
+
+            # Check if the user exceeds the limit
+            if len(self.requests_log[client_ip]) >= 5:
+                return JsonResponse(
+                    {'error': 'Message limit exceeded. Try again later.'},
+                    status=429
+                )
+
+            # Add current request time to the log
+            self.requests_log[client_ip].append(now)
+
+        return self.get_response(request)
+
+    @staticmethod
+    def get_client_ip(request):
+        # Get client IP from request
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            return x_forwarded_for.split(',')[0]
+        return request.META.get('REMOTE_ADDR')
