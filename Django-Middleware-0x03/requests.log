@@ -1,0 +1,15 @@
+2025-01-16 17:22:32.386977 - User: Anonymous - Path: /
+Not Found: /
+2025-01-16 17:22:32.532534 - User: Anonymous - Path: /favicon.ico
+Not Found: /favicon.ico
+2025-01-16 17:23:18.665736 - User: Anonymous - Path: /admin/
+2025-01-16 17:23:18.685771 - User: Anonymous - Path: /admin/login/
+2025-01-16 17:23:22.003010 - User: Anonymous - Path: /
+Not Found: /
+2025-01-16 17:23:31.109143 - User: Anonymous - Path: /api/chats/
+Forbidden: /api/chats/
+2025-01-16 17:23:31.274798 - User: Anonymous - Path: /api/img/grid.png
+Not Found: /api/img/grid.png
+2025-01-16 17:23:55.811619 - User: Anonymous - Path: /api-auth/
+Not Found: /api-auth/
+/home/inm749/alx-backend-python/Django-Middleware-0x03/chats/middleware.py changed, reloading.
