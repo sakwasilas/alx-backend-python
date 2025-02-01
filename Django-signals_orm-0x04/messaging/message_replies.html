@@ -1,0 +1,11 @@
+<h3>Parent Message</h3>
+<p><strong>{{ parent_message.sender.username }}</strong>: {{ parent_message.content }}</p>
+
+<h3>Replies</h3>
+<ul>
+    {% for reply in replies %}
+        <li>
+            <strong>{{ reply.sender.username }}</strong>: {{ reply.content }}
+        </li>
+    {% endfor %}
+</ul>

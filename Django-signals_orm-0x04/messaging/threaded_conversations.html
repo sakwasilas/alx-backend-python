@@ -1,0 +1,14 @@
+<ul>
+    {% for message in messages %}
+        <li>
+            <strong>{{ message.sender.username }}</strong>: {{ message.content }}
+            <ul>
+                {% for reply in message.replies.all %}
+                    <li>
+                        <strong>{{ reply.sender.username }}</strong>: {{ reply.content }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
