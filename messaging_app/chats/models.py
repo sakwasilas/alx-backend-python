@@ -11,6 +11,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=255, null=False)  # Django handles password hashing
     first_name = models.CharField(max_length=150, null=False)
     last_name = models.CharField(max_length=150, null=False)
+    phone_number=models.CharField(max_length=12,null=False)
     
     def __str__(self):
         return self.email
