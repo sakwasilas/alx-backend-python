@@ -19,6 +19,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('chats.urls')),  # Include the chats app URLs under the 'api' path
-    path('api-auth/', include('rest_framework.urls')),  # Add the authentication URLs for login and logout
+    path('api/', include('chats.urls')), 
+    path('api-auth/', include('rest_framework.urls')), 
+    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Token obtain route
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),  # Token refresh route
+    
+   path('api/', include(router.urls)),
 ]
