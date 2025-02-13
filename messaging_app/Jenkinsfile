@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        GITHUB_CREDENTIALS = 'Brian_Kipkemboi-78'  
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                // Explicitly checking out the branch and logging it
+                sh 'git branch'
+                git branch: 'main', credentialsId: "${GITHUB_CREDENTIALS}", url: 'https://github.com/Briankipkemboi78/alx-backend-python'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies...'
+                sh 'python3 -m venv venv'
+                sh './venv/bin/pip3 install -r messaging_app/requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running tests...'
+                sh './venv/bin/pytest messaging_app/tests --junitxml=report.xml'
+            }
+        }
+
+        stage('Generate Report') {
+            steps {
+                echo 'Generating test report...'
+                publishHTML([allowMissing: false,
+                             alwaysLinkToLastBuild: true,
+                             keepAll: true,
+                             reportDir: './',
+                             reportFiles: 'report.xml',
+                             reportName: 'Test Report'])
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            deleteDir() // Cleanup workspace after build
+        }
+    }
+}

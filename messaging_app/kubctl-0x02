@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Apply blue (current) version deployment
+kubectl apply -f blue_deployment.yaml
+
+# Apply green (new) version deployment
+kubectl apply -f green_deployment.yaml
+
+# Check the status of pods to verify deployments
+kubectl get pods
+
+# Monitor logs of the green version to check for errors
+GREEN_POD=$(kubectl get pods -l version=green -o jsonpath='{.items[0].metadata.name}')
+kubectl logs $GREEN_POD
+
+# Gradually switch traffic to the green version by updating the service selector
+kubectl expose deployment django-messaging-green --name=django-messaging-service --port=80 --target-port=8080 --type=ClusterIP
+
+# Verify that the green version is receiving traffic by checking the service endpoints
+kubectl get svc django-messaging-service

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-messaging
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: django-messaging
+  template:
+    metadata:
+      labels:
+        app: django-messaging
+    spec:
+      containers:
+      - name: django-messaging
+        image: <your-docker-image>:2.0  
+        ports:
+        - containerPort: 8080

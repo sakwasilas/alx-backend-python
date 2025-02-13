@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    environment {
+        GITHUB_CREDENTIALS = 'Brian_Kipkemboi-78'  
+        DOCKER_CREDENTIALS = 'Briankipkemboi' 
+        DOCKER_IMAGE = 'briankipkemboi78/messaging_app' 
+        DOCKER_TAG = 'latest'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                // Explicitly checking out the branch and logging it
+                sh 'git branch'
+                git branch: 'main', credentialsId: "${GITHUB_CREDENTIALS}", url: 'https://github.com/Briankipkemboi78/alx-backend-python'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies...'
+                sh 'python3 -m venv venv'
+                sh './venv/bin/pip3 install -r messaging_app/requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running tests...'
+                sh './venv/bin/pytest messaging_app/tests --junitxml=report.xml'
+            }
+        }
+
+        stage('Generate Report') {
+            steps {
+                echo 'Generating test report...'
+                publishHTML([allowMissing: false,
+                             alwaysLinkToLastBuild: true,
+                             keepAll: true,
+                             reportDir: './',
+                             reportFiles: 'report.xml',
+                             reportName: 'Test Report'])
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f messaging_app/Dockerfile .'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                echo 'Pushing Docker image to Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker push ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            deleteDir() // Cleanup workspace after build
+        }
+    }
+}

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Apply the updated deployment with version 2.0
+echo "Applying updated blue deployment..."
+kubectl apply -f blue_deployment.yaml
+
+# Monitor the rollout status of the update
+echo "Monitoring rolling update progress..."
+kubectl rollout status deployment/django-messaging
+
+# Loop to continuously send requests to the Django app to ensure availability
+echo "Testing if the app experiences any downtime during the update..."
+for i in {1..10}
+do
+  curl -s http://<your-service-ip>:8080 || echo "Request failed"
+  sleep 2
+done
+
+# Verify the rolling update is complete by checking the current pods
+echo "Verifying the updated pods..."
+kubectl get pods -l app=django-messaging
+
+# Confirm the new version is running
+echo "Rolling update completed, verifying the image version of the running pods..."
+kubectl describe pods -l app=django-messaging | grep "Image:"
